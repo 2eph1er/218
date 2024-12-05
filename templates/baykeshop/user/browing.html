@@ -1,0 +1,61 @@
+{% extends 'baykeshop/user/userinfo.html' %}
+
+{% block title %}
+{{ request.user.username }} - 余额明细    
+{% endblock %}
+
+{% block userinfo_content %}
+<div class="box is-radiusless">
+    <h1 class=" is-size-4">浏览记录</h1>
+    <div class="dropdown-divider"></div>
+
+    <table style="width:100%">
+        {% for item in history %}
+        <tr>
+            <td>
+                <p class=" has-text-grey-light">商品图</p>
+                {% if item.cover_pic_url %}
+                    <a href="{% url 'baykeshop:spu_detail' item.id %}"><img src="{{ item.cover_pic_url }}" alt="商品封面" style="width:50px;height:50px;"></a>
+                {% endif %}
+            </td>
+            <td>
+                <p class=" has-text-grey-light">商品标题</p>
+                <h1 class=" is-size-4" style="font-size:18px !important;">{{ item.title|truncatechars:15 }}</h1>
+            </td>
+            <td>
+                <p class=" has-text-grey-light">商品描述</p>
+                <h1 class=" is-size-4" style="font-size:18px !important;">{{ item.description|truncatechars:15 }}</h1>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <div class=" dropdown-divider"></div>
+    <div class="table-container pl-4 pr-4">
+        <table class="table is-fullwidth is-hoverable">
+            <tbody>
+                {% for balance in qs %}
+                <tr>
+                    <td class="{% if balance.change_status == 1 %}  has-text-success-dark {% else %} has-text-danger-dark {% endif %}">
+                        {{ balance.get_change_status_display }}
+                    </td>
+                    <td class="{% if balance.change_status == 1 %}  has-text-success-dark {% else %} has-text-danger-dark {% endif %}">
+                        {% if balance.change_status == 1 %}  + {% else %} - {% endif %}{{ balance.amount }}
+                    </td>
+                    <td class="{% if balance.change_status == 1 %}  has-text-success-dark {% else %} has-text-danger-dark {% endif %}">
+                        {{ balance.get_change_way_display }}
+                    </td>
+                    <td class="{% if balance.change_status == 1 %}  has-text-success-dark {% else %} has-text-danger-dark {% endif %}">
+                        {{ balance.add_date }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}
